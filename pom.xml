@@ -3,7 +3,7 @@
     <groupId>de.fenvariel</groupId>
     <artifactId>gettext-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Maven Gettext Plugin</name>
     <description>Generate messages templates and deploy messages bundles</description>
     <properties>
