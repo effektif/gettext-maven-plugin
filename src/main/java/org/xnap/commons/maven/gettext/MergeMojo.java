@@ -52,10 +52,31 @@ public class MergeMojo extends AbstractGettextMojo {
     protected String backup;
 
     /**
+     * The --update option. Update po-file. Do nothing if po-file is already up
+     * to date.
+     */
+    @Parameter(defaultValue = "true")
+    protected boolean update;
+
+    /**
      * Activates fuzzy matching if set to true.
      */
     @Parameter(defaultValue = "false")
     protected boolean fuzzy;
+
+    /**
+     * Keep the previous msgids of translated messages, marked with ‘#|’, when
+     * adding the fuzzy marker to such messages.
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean previous;
+
+    /**
+     * Keep the previous msgids of translated messages, marked with ‘#|’, when
+     * adding the fuzzy marker to such messages.
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean multiDomain;
 
     public void execute() throws MojoExecutionException {
         getLog().info("Invoking msgmerge for po files in '"
@@ -72,9 +93,18 @@ public class MergeMojo extends AbstractGettextMojo {
             cl.setExecutable(msgmergeCmd);
             addExtraArguments(cl);
             cl.createArg().setValue("-q");
-            cl.createArg().setValue("-U");
+
+            if (update) {
+                cl.createArg().setValue("-U");
+            }
+            if (multiDomain) {
+                cl.createArg().setValue("--multi-domain");
+            }
             cl.createArg().setValue("--backup=" + backup);
-            if (fuzzy) {
+            if (!fuzzy) {
+                cl.createArg().setValue("--no-fuzzy-matching");
+            }
+            if (previous) {
                 cl.createArg().setValue("--previous");
             }
             if (omitLocation) {
