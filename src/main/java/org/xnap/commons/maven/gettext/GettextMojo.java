@@ -82,6 +82,56 @@ public class GettextMojo extends AbstractGettextMojo {
     @Parameter(defaultValue = "false")
     protected boolean omitHeader;
 
+    @Parameter(defaultValue = "false")
+    protected boolean joinExisting;
+
+    /**
+     * Set the copyright holder in the output. string should be the copyright
+     * holder of the surrounding package. (Note that the msgstr strings,
+     * extracted from the package’s sources, belong to the copyright holder of
+     * the package.) Translators are expected to transfer or disclaim the
+     * copyright for their translations, so that package maintainers can
+     * distribute them without legal risk. If string is empty, the output files
+     * are marked as being in the public domain; in this case, the translators
+     * are expected to disclaim their copyright, again so that package
+     * maintainers can distribute them without legal risk.
+     *
+     * The default value for string is the '' so public domain.
+     */
+    @Parameter(defaultValue = "")
+    protected String copyrightHolder;
+
+    /**
+     * Set the package name in the header of the output.
+     */
+    @Parameter
+    protected String packageName;
+
+    /**
+     * Set the package version in the header of the output. This option has an
+     * effect only if the ‘packageName’ option is also used.
+     */
+    @Parameter
+    protected String packageVersion;
+
+    /**
+     * Set the reporting address for msgid bugs. This is the email address or
+     * URL to which the translators shall report bugs in the untranslated
+     * strings: - Strings which are not entire sentences; see the maintainer
+     * guidelines in Preparing Strings. - Strings which use unclear terms or
+     * require additional context to be understood. - Strings which make invalid
+     * assumptions about notation of date, time or money. - Pluralisation
+     * problems. - Incorrect English spelling. - Incorrect formatting. It can be
+     * your email address, or a mailing list address where translators can write
+     * to without being subscribed, or the URL of a web page through which the
+     * translators can contact you.
+     *
+     * The default value is empty, which means that translators will be
+     * clueless! Don’t forget to specify this option.
+     */
+    @Parameter
+    protected String msgidBugsAddress;
+
     public void execute() throws MojoExecutionException {
         getLog().info("Invoking xgettext for Java files in '"
                 + sourceDirectory.getAbsolutePath() + "'.");
@@ -95,11 +145,38 @@ public class GettextMojo extends AbstractGettextMojo {
         cl.createArg().setValue("--sort-output");
         if (omitHeader) {
             cl.createArg().setValue("--omit-header");
+        } else {
+            cl.createArg().setValue("--copyright-holder=" + copyrightHolder);
+            if (packageName != null) {
+                cl.createArg().setValue("--package-name=" + packageName);
+            } else {
+                cl.createArg().setValue("--package-name=" + project.getGroupId() + ":" + project.getArtifactId());
+            }
+            if (packageVersion != null) {
+                cl.createArg().setValue("--package-version=" + packageVersion);
+            } else {
+                cl.createArg().setValue("--package-version=" + project.getVersion());
+            }
+            if (msgidBugsAddress != null) {
+                cl.createArg().setValue("--msgid-bugs-address=" + msgidBugsAddress);
+            } else {
+                String bugAddress = project.getUrl();
+                if (bugAddress == null || bugAddress.trim().isEmpty()) {
+                    if (project.getOrganization() != null) {
+                        bugAddress = project.getOrganization().getUrl();
+                    }
+                }
+                cl.createArg().setValue("--msgid-bugs-address=" + bugAddress);
+            }
+
         }
         if (omitLocation) {
             cl.createArg().setValue("--no-location");
         }
-        //cl.createArg().setValue("--join-existing");
+
+        if (joinExisting) {
+            cl.createArg().setValue("--join-existing");
+        }
         cl.createArg().setLine(keywords);
         cl.setWorkingDirectory(sourceDirectory.getAbsolutePath());
 
@@ -128,7 +205,7 @@ public class GettextMojo extends AbstractGettextMojo {
             }
         }
 
-        getLog().debug("Executing: " + cl.toString());
+        getLog().info("Executing: " + cl.toString());
         StreamConsumer out = new LoggerStreamConsumer(getLog(), LoggerStreamConsumer.INFO);
         StreamConsumer err = new LoggerStreamConsumer(getLog(), LoggerStreamConsumer.WARN);
         try {

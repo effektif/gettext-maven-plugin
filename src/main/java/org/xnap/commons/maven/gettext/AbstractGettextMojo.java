@@ -22,8 +22,12 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 import java.io.File;
 
+import org.apache.maven.project.MavenProject;
+
 public abstract class AbstractGettextMojo extends AbstractMojo {
 
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    protected MavenProject project;
 
     /**
      * The output directory for generated class or properties files.
@@ -36,13 +40,13 @@ public abstract class AbstractGettextMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project.build.sourceDirectory}", required = true)
     protected File sourceDirectory;
-    
+
     /**
-     * The output directory for the keys.pot directory for merging .po files. 
+     * The output directory for the keys.pot directory for merging .po files.
      */
     @Parameter(defaultValue = "${basedir}/src/main/po", required = true)
     protected File poDirectory;
-    
+
     /**
      * Filename of the .pot file.
      */
