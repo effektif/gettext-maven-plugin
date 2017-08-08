@@ -1,4 +1,4 @@
-package org.xnap.commons.maven.gettext;
+package de.fenvariel.maven.gettext;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -107,9 +107,7 @@ public class MergeMojo extends AbstractGettextMojo {
             if (previous) {
                 cl.createArg().setValue("--previous");
             }
-            if (omitLocation) {
-                cl.createArg().setValue("--no-location");
-            }
+            cl.createArg().setValue("--add-location=" + location.name().toLowerCase());
             cl.createArg().setFile(new File(poDirectory, files[i]));
             cl.createArg().setValue(new File(poDirectory, keysFile).getAbsolutePath());
 

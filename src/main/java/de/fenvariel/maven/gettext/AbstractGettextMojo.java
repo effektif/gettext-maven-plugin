@@ -1,4 +1,4 @@
-package org.xnap.commons.maven.gettext;
+package de.fenvariel.maven.gettext;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -16,13 +16,13 @@ package org.xnap.commons.maven.gettext;
  * limitations under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.codehaus.plexus.util.cli.Commandline;
-
 import java.io.File;
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.cli.Commandline;
+import static de.fenvariel.maven.gettext.Location.FULL;
 
 public abstract class AbstractGettextMojo extends AbstractMojo {
 
@@ -60,10 +60,10 @@ public abstract class AbstractGettextMojo extends AbstractMojo {
     protected String[] extraArguments;
 
     /**
-     * Deactivates code omitLocation information if set to true.
+     * set the location comment-mode (full,file,.
      */
-    @Parameter(defaultValue = "false")
-    protected boolean omitLocation;
+    @Parameter()
+    protected Location location = FULL;
 
     protected void addExtraArguments(Commandline cl) {
         if (extraArguments != null) {

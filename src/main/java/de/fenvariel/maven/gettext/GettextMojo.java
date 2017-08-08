@@ -1,4 +1,4 @@
-package org.xnap.commons.maven.gettext;
+package de.fenvariel.maven.gettext;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -98,22 +98,28 @@ public class GettextMojo extends AbstractGettextMojo {
      *
      * The default value for string is the '' so public domain.
      */
-    @Parameter(defaultValue = "")
+    @Parameter(defaultValue = "${project.organisation.name}")
     protected String copyrightHolder;
 
     /**
      * Set the package name in the header of the output.
      */
-    @Parameter
+    @Parameter(defaultValue = "${project.build.finalName}")
     protected String packageName;
 
     /**
      * Set the package version in the header of the output. This option has an
      * effect only if the ‘packageName’ option is also used.
      */
-    @Parameter
+    @Parameter(defaultValue = "${project.version}")
     protected String packageVersion;
 
+    /**
+     * Set if the output should be sorted.
+     */
+    @Parameter(defaultValue = "FALSE")
+    protected Sort sort;
+    
     /**
      * Set the reporting address for msgid bugs. This is the email address or
      * URL to which the translators shall report bugs in the untranslated
@@ -142,7 +148,16 @@ public class GettextMojo extends AbstractGettextMojo {
         cl.createArg().setValue("--from-code=" + encoding);
         cl.createArg().setValue("--output=" + new File(poDirectory, keysFile).getAbsolutePath());
         cl.createArg().setValue("--language=Java");
-        cl.createArg().setValue("--sort-output");
+        switch (sort) {
+            case TRUE:
+                cl.createArg().setValue("--sort-output");
+                break;
+            case FILE:
+                cl.createArg().setValue("--sort-by-file");
+                break;
+            default:
+                break;
+        }
         if (omitHeader) {
             cl.createArg().setValue("--omit-header");
         } else {
@@ -170,9 +185,7 @@ public class GettextMojo extends AbstractGettextMojo {
             }
 
         }
-        if (omitLocation) {
-            cl.createArg().setValue("--no-location");
-        }
+        cl.createArg().setValue("--add-location="+location.name().toLowerCase());
 
         if (joinExisting) {
             cl.createArg().setValue("--join-existing");

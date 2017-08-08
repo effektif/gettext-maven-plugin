@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-sign-test</actionName>
+            <displayName>sign-test</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>gpg:sign</goal>
+            </goals>
+        </action>
+    </actions>
