@@ -24,6 +24,7 @@ under the License.
   </bannerLeft>
   <body>
     <menu name="Overview">
+      <item name="Goals" href="goals.html"/>
       <item name="Usage" href="usage.html"/>
     </menu>
 
