@@ -1,7 +1,7 @@
  ------
  Usage
  ------
- Steffen Pingel
+ Alexander Schütz
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -27,20 +27,30 @@
 
 Usage
 
- This plugin is used to generate Gettext PO files.
+ This plugin is used to generate Gettext POT files merge existing Gettext PO 
+ files and generate ResourceBundles.
 
 *How to use the plugin
 
- Update pot and po files: 
+ <<Breaking change: The merge goal no longer invokes the gettext goal. This way
+ you can merge ondependently from gettext.>>
+
+ Update pot-file: 
 
 -------------------
-mvn ninja.leaping:maven-gettext-plugin:merge
+mvn de.fenvariel:maven-gettext-plugin:gettext
+-------------------
+
+ Update po files with pot-file: 
+
+-------------------
+mvn de.fenvariel:maven-gettext-plugin:merge
 -------------------
 
  Create properties/classs files: 
 
 -------------------
-mvn ninja.leaping:maven-gettext-plugin:1.0:dist
+mvn de.fenvariel:maven-gettext-plugin:dist
 -------------------
 
 *How to Generate the Gettext Report
@@ -50,9 +60,9 @@ mvn ninja.leaping:maven-gettext-plugin:1.0:dist
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.xnap.commons</groupId>
+        <groupId>de.fenvariel</groupId>
         <artifactId>maven-gettext-plugin</artifactId>
-        <version>1.1</version>
+        <version>2.0</version>
         <configuration>
           <targetBundle>my.package.Messages</targetBundle>
           <outputFormat>properties</outputFormat>
